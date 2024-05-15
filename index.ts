@@ -1,31 +1,40 @@
-import express from "express";
-import bodyParser from "body-parser";
-import path from "path";
-import userProfileRoutes from "./routes/userProfile";
+import express from 'express';
+import path from 'path';
+import userProfileRoutes from './routes/userProfile';
 import authRoutes from './routes/authRoutes';
+import cors from 'cors'; // Importing cors
+import dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
-app.use(express.static(path.join(__dirname, "public")))
-   .set("views", path.join(__dirname, "views"))
-   .set("view engine", "ejs");
+// Middleware
+app.use(express.static(path.join(__dirname, 'public')))
+   .set('views', path.join(__dirname, 'views'))
+   .set('view engine', 'ejs');
 
 app.use(express.json()); // For parsing JSON request bodies
-app.use(authRoutes);
 
+// Enable CORS for all origins with specific methods and headers
+app.use(cors({
+  allowedHeaders: 'Content-Type,Authorization'
+}));
+
+// Routes
+app.use(authRoutes);
 app.use('/', userProfileRoutes);
 
-app.get("/", (req, res) => {
-  res.render("index");
+app.get('/', (req, res) => {
+  res.render('index');
 });
 
-app.get("/api", (req, res) => {
-  res.json({ msg: "Hello world" });
+app.get('/api', (req, res) => {
+  res.json({ msg: 'Hello world' });
 });
 
+// Start server
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
 });
