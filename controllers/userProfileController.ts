@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { db, admin } from "./../firebaseAdmin";
-import { DocumentSnapshot } from "firebase-admin/firestore";
 
 interface UserProfile {
   id: string;
@@ -12,20 +11,44 @@ interface UserProfile {
   learning_language?: string;
 }
 
-export const getAllProfiles = async (
+export const getUserProfile = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const snapshot = await db.collection("user_profile").get();
-    const documents = snapshot.docs.map((doc: DocumentSnapshot) => {
-      const docData = doc.data() as UserProfile;
-      return { ...docData, id: doc.id }; // Move id to the end to ensure it does not get overwritten
-    });
-    res.json(documents);
+    const userToken = req.headers.authorization;
+
+    if (!userToken) {
+      res.status(401).send("Authorization token is missing");
+      return;
+    }
+
+    const decodedToken = await admin.auth().verifyIdToken(userToken);
+    const email = decodedToken.email;
+
+    if (!email) {
+      res.status(400).send("Invalid token");
+      return;
+    }
+
+    const userDoc = await db
+      .collection("user_profile")
+      .where("user_email", "==", email)
+      .limit(1)
+      .get();
+
+    if (userDoc.empty) {
+      res.status(404).send("User profile not found");
+      return;
+    }
+
+    const userProfile = userDoc.docs[0].data() as UserProfile;
+    userProfile.id = userDoc.docs[0].id;
+
+    res.json(userProfile);
   } catch (err) {
-    console.error("Error fetching user profiles:", err);
-    res.status(500).send("Failed to retrieve user profiles");
+    console.error("Error fetching user profile:", err);
+    res.status(500).send("Failed to retrieve user profile");
   }
 };
 
@@ -56,12 +79,10 @@ export const setUserProfile = async (
         .add(userProfile);
       userProfile.id = newUserProfileRef.id;
 
-      res
-        .status(201)
-        .send({
-          message: "User profile created successfully",
-          user_name: userProfile.user_name,
-        });
+      res.status(201).send({
+        message: "User profile created successfully",
+        user_name: userProfile.user_name,
+      });
     }
   } catch (err) {
     console.error("Error updating user profile:", err);

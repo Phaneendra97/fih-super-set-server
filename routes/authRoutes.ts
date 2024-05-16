@@ -47,7 +47,7 @@ authRoutes.post("/api/signin", async (req, res) => {
         // No error key, sign-in was successful
         res.status(200).json({
           message: "User signed in successfully",
-          userCredential: result.userCredential,
+          userToken: result.userToken,
         });
       }
     })

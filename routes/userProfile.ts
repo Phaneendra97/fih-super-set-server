@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { getAllProfiles, setUserProfile } from '../controllers/userProfileController';
+import { getUserProfile, setUserProfile } from '../controllers/userProfileController';
 
 const userProfileRoutes = Router();
 
-userProfileRoutes.get('/api/get-all-user-profiles', getAllProfiles);
+userProfileRoutes.get('/api/get-user-profile', getUserProfile);
 userProfileRoutes.post('/api/set-user-profile', setUserProfile);
 
 

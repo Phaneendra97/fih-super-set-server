@@ -36,25 +36,22 @@ export async function signUpUser(
 }
 
 // Function to sign in an existing user
-export function signInUser(
+export async function signInUser(
   email: string,
   password: string
 ): Promise<{
   message: string;
-  userCredential?: UserCredential;
+  userToken?: string;
   error?: string;
 }> {
-  return signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential: UserCredential) => {
-      return {
-        message: "User signed in successfully",
-        userCredential: userCredential,
-      }; // Successfully signed in
-    })
-    .catch((error: any) => {
-      return {
-        message: "Failed to sign in",
-        error: `Error ${error.code}: ${error.message}`, // Return error message
-      };
-    });
+  const userCredential: UserCredential = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  const userToken: string = await userCredential.user.getIdToken();
+  return {
+    message: "User signed in successfully",
+    userToken: userToken,
+  };
 }
