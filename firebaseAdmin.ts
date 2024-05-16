@@ -1,4 +1,4 @@
-const admin = require('firebase-admin');
+import * as admin from 'firebase-admin';
 const serviceAccount = require('./sih-super-set-dev-firebase-adminsdk-ayuh1-1ee1709ed8.json'); 
 
 admin.initializeApp({
@@ -8,4 +8,4 @@ admin.initializeApp({
 const db = admin.firestore();
 
 
-export default db;
+export { admin, db };
