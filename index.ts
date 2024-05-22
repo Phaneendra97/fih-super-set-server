@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import userProfileRoutes from './routes/userProfile';
 import userGameDataRoutes from './routes/userGame';
+import gameProfileRoutes from './routes/gameProfileRoutes';
 import authRoutes from './routes/authRoutes';
 import cors from 'cors'; // Importing cors
 import dotenv from 'dotenv';
@@ -27,6 +28,7 @@ app.use(cors({
 app.use(authRoutes);
 app.use('/', userProfileRoutes);
 app.use('/', userGameDataRoutes);
+app.use('/', gameProfileRoutes);
 
 app.get('/', (req, res) => {
   res.render('index');
