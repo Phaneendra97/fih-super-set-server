@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import userProfileRoutes from './routes/userProfile';
+import userGameDataRoutes from './routes/userGame';
 import authRoutes from './routes/authRoutes';
 import cors from 'cors'; // Importing cors
 import dotenv from 'dotenv';
@@ -25,6 +26,7 @@ app.use(cors({
 // Routes
 app.use(authRoutes);
 app.use('/', userProfileRoutes);
+app.use('/', userGameDataRoutes);
 
 app.get('/', (req, res) => {
   res.render('index');
