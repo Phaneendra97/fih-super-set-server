@@ -1,8 +1,12 @@
-import { Router } from 'express';
-import { getGameProfileByName } from '../controllers/gameProfileController';
+import express from 'express';
+import { getGameProfileByName, getAllGameProfiles } from '../controllers/gameProfileController';
 
-const gameProfileRoutes = Router();
+const router = express.Router();
 
-gameProfileRoutes.get('/api/get-game-profile', getGameProfileByName);
+// Route to fetch a specific game profile by game_name
+router.get('/api/game', getGameProfileByName);
 
-export default gameProfileRoutes;
+// Route to fetch all game profiles
+router.get('/api/all-game-profiles', getAllGameProfiles);
+
+export default router;
