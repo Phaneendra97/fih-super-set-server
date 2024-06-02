@@ -4,7 +4,6 @@ import { signUpUser, signInUser } from "../controllers/authController"; // Ensur
 const authRoutes = Router();
 
 // Route for signing up a new user
-// Route for signing up a new user
 authRoutes.post("/api/signup", (req, res) => {
   const { email, password } = req.body;
   signUpUser(email, password)
