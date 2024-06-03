@@ -80,6 +80,7 @@ export const postUserGameDataByGameName = async (
       .where("user_id", "==", userId)
       .get();
       const userData = req.body;
+      userData.user_id = userId;
     if (querySnapshot.empty) {
       // If no document exists, create a new one with the provided data
       

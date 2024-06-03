@@ -4,6 +4,6 @@ import { getUserGameDataByGameName, postUserGameDataByGameName } from '../contro
 const userGameDataRoutes = Router();
 
 userGameDataRoutes.get('/api/get-user-game-data/:game_name', getUserGameDataByGameName);
-userGameDataRoutes.post('/api/post-user-game-data/:game_name', postUserGameDataByGameName);
+userGameDataRoutes.post('/api/set-user-game-data/:game_name', postUserGameDataByGameName);
 
 export default userGameDataRoutes;

@@ -14,6 +14,7 @@ export async function signUpUser(
 ): Promise<{
   message: string;
   userToken?: string;
+  userId?: string;
   error?: string;
 }> {
   try {
@@ -23,9 +24,11 @@ export async function signUpUser(
       password
     );
     const userToken: string = await userCredential.user.getIdToken();
+    const userId: string = await userCredential.user.uid;
     return {
       message: "User signed up successfully",
       userToken: userToken,
+      userId: userId
     };
   } catch (error: any) {
     return {
@@ -43,6 +46,7 @@ export async function signInUser(
   message: string;
   userToken?: string;
   error?: string;
+  userId?: string
 }> {
   const userCredential: UserCredential = await signInWithEmailAndPassword(
     auth,
@@ -50,8 +54,11 @@ export async function signInUser(
     password
   );
   const userToken: string = await userCredential.user.getIdToken();
+  const userId: string = await userCredential.user.uid;
   return {
     message: "User signed in successfully",
     userToken: userToken,
+    userId: userId
+
   };
 }
