@@ -19,6 +19,7 @@ authRoutes.post("/api/signup", (req, res) => {
         res.status(201).json({
           message: "User signed up successfully",
           userToken: result.userToken,
+          userId: result.userId,
         });
       }
     })
@@ -47,6 +48,7 @@ authRoutes.post("/api/signin", async (req, res) => {
         res.status(200).json({
           message: "User signed in successfully",
           userToken: result.userToken,
+          userId: result.userId,
         });
       }
     })
