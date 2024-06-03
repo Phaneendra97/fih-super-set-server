@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
-import userProfileRoutes from './routes/userProfile';
-import userGameDataRoutes from './routes/userGame';
+import userProfileRoutes from './routes/userProfileRoutes';
+import userGameDataRoutes from './routes/userGameDataRoutes';
 import gameProfileRoutes from './routes/gameProfileRoutes';
 import authRoutes from './routes/authRoutes';
 import cors from 'cors'; // Importing cors

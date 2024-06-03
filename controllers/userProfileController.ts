@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { db, admin } from "./../firebaseAdmin";
 
 interface UserProfile {
-  id: string;
   user_id?: string;
   user_name?: string;
   user_age?: number;
@@ -43,7 +42,6 @@ export const getUserProfile = async (
     }
 
     const userProfile = userDoc.docs[0].data() as UserProfile;
-    userProfile.id = userDoc.docs[0].id;
 
     res.json(userProfile);
   } catch (err) {
@@ -61,26 +59,40 @@ export const setUserProfile = async (
 
     if (!token) {
       res.status(401).send("Authorization token is missing");
-    } else {
-      const decodedToken = await admin.auth().verifyIdToken(token);
-      const email = decodedToken.email;
-      const userId = decodedToken.uid;
-      if (!email) {
-        res.status(400).send("Invalid token");
-      }
+      return;
+    }
 
-      const userProfile: UserProfile = req.body;
-      userProfile.user_email = email;
-      userProfile.user_id = userId;
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const email = decodedToken.email;
+    const userId = decodedToken.uid;
 
-      // If no user profile is found, create a new one
-      const newUserProfileRef = await db
-        .collection("user_profile")
-        .add(userProfile);
-      userProfile.id = newUserProfileRef.id;
+    if (!email) {
+      res.status(400).send("Invalid token");
+      return;
+    }
+
+    const userProfile: UserProfile = req.body;
+    userProfile.user_email = email;
+    userProfile.user_id = userId;
+
+    // Query the user_profile collection to check if a document with user_id already exists
+    const querySnapshot = await db.collection("user_profile").where('user_id', '==', userId).get();
+
+    if (querySnapshot.empty) {
+      // If no document exists, create a new one
+      const newUserProfileRef = await db.collection("user_profile").add(userProfile);
 
       res.status(201).send({
         message: "User profile created successfully",
+        user_name: userProfile.user_name,
+      });
+    } else {
+      // If a document exists, update the existing document
+      const docId = querySnapshot.docs[0].id;
+      await db.collection("user_profile").doc(docId).set(userProfile, { merge: true });
+
+      res.status(200).send({
+        message: "User profile updated successfully",
         user_name: userProfile.user_name,
       });
     }
